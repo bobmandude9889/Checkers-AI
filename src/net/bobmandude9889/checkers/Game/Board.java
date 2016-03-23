@@ -4,9 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import net.bobmandude9889.checkers.Render.AnimatedPiece;
 import net.bobmandude9889.checkers.Render.Display;
@@ -15,21 +13,19 @@ import net.bobmandude9889.checkers.Render.Renderable;
 
 public class Board implements Renderable {
 
-	public List<Piece> pieces;
 	Color sqrCol1 = new Color(239, 199, 171);
 	Color sqrCol2 = new Color(150, 78, 29);
-	public int size = 8;
-	public int tileSize = 50;
+	public static int size = 8;
+	public static int tileSize = 50;
 	public boolean canInput = true;
 	public Piece selected = null;
 	public Color selectColor;
 	public Color validColor;
 	public List<PiecePath> validMoves;
-	private Display display;
+	public BoardState state;
 
 	public Board(Display display) {
-		this.display = display;
-		pieces = new CopyOnWriteArrayList<Piece>();
+		state = new BoardState();
 		tileSize = display.window.getContentPane().getHeight() / size;
 		selectColor = new Color(0, 0, 255, 100);
 		validColor = new Color(0, 255, 0, 100);
@@ -45,7 +41,8 @@ public class Board implements Renderable {
 				for (int y = 0; y < 3; y++) {
 					if (x % 2 == (top + y) % 2) {
 						Piece piece = new Piece(x, top + y, tileSize, color);
-						pieces.add(piece);
+						piece.setKing(true);
+						state.pieces.add(piece);
 					}
 				}
 			}
@@ -64,7 +61,7 @@ public class Board implements Renderable {
 				g.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
 			}
 		}
-		for (Piece p : pieces) {
+		for (Piece p : state.pieces) {
 			p.render(g);
 		}
 		if (selected != null) {
@@ -87,26 +84,20 @@ public class Board implements Renderable {
 		}
 	}
 
-	public Piece getPiece(int x, int y) {
-		for (Piece piece : pieces) {
-			Point point = piece.getBoardPos();
-			if (point.x == x && point.y == y) {
-				return piece;
-			}
-		}
-		return null;
-	}
-
 	public Piece getClickedPiece(int x, int y) {
-		return getPiece((int) Math.floor(x / tileSize), (int) Math.floor(y / tileSize));
+		return state.getPiece((int) Math.floor(x / tileSize), (int) Math.floor(y / tileSize));
 	}
 
 	public Point getBoardPoint(int x, int y) {
 		return new Point((int) Math.floor(x / tileSize), (int) Math.floor(y / tileSize));
 	}
 
-	public boolean movePiece(int x, int y, int toX, int toY) {
-		return movePiece(getPiece(x, y), x, y, toX, toY);
+	public boolean canMove(int x, int y) {
+		for (PiecePath path : validMoves) {
+			if (path.getLast().x == x && path.getLast().y == y)
+				return true;
+		}
+		return false;
 	}
 
 	public boolean movePiece(Piece piece, int x, int y, int toX, int toY) {
@@ -122,12 +113,8 @@ public class Board implements Renderable {
 		return true;
 	}
 
-	public boolean canMove(int x, int y) {
-		for (PiecePath path : validMoves) {
-			if (path.getLast().x == x && path.getLast().y == y)
-				return true;
-		}
-		return false;
+	public boolean movePiece(int x, int y, int toX, int toY) {
+		return movePiece(state.getPiece(x, y), x, y, toX, toY);
 	}
 
 	// private boolean canMove(int x, int y, int toX, int toY, boolean jumpOnly)
@@ -135,75 +122,16 @@ public class Board implements Renderable {
 	// return canMove(x, y, toX, toY, jumpOnly, getPiece(x, y));
 	// }
 
-	private boolean canMove(int x, int y, int toX, int toY, boolean jumpOnly, Piece piece) {
-		int xDist = toX - x;
-		int yDist = toY - y;
-		Piece toPiece = getPiece(toX, toY);
-		if (Math.abs(xDist) > 2)
-			return false;
-		if (Math.abs(yDist) == 2) {
-			Piece midPiece = getPiece(x + (xDist / 2), y + (yDist / 2));
-			if (midPiece == null || midPiece.color.equals(piece.color))
-				return false;
-		}
-		if (toX % 2 != toY % 2)
-			return false;
-		if (Math.abs(xDist) != Math.abs(yDist))
-			return false;
-		if (piece.color.equals(Color.RED) && yDist < 0 && !piece.isKing())
-			return false;
-		if (piece.color.equals(Color.BLACK) && yDist > 0 && !piece.isKing())
-			return false;
-		if (x == toX && y == toY)
-			return false;
-		if (toPiece != null)
-			return false;
-
-		if (jumpOnly) {
-			if (Math.abs(xDist) == 1)
-				return false;
-		}
-		return true;
-	}
-
 	public void setValidMoves(int x, int y) {
-		validMoves = getValidMoves(x, y, false, getPiece(x, y),null);
-	}
-
-	public List<PiecePath> getValidMoves(int x, int y, boolean jumpOnly, Piece piece, Point prev) {
-		List<PiecePath> moves = new ArrayList<PiecePath>();
-		if (piece != null) {
-			for (int newY = 0; newY < size; newY++) {
-				for (int newX = 0; newX < size; newX++) {
-					if (canMove(x, y, newX, newY, jumpOnly, piece) && !(prev != null && newX == prev.x && newY == prev.y)) {
-						if (canMove(x, y, newX, newY, true, piece)) {
-							for (PiecePath move : getValidMoves(newX, newY, true, piece, new Point(x, y))) {
-								PiecePath path = new PiecePath(piece.getBoardPos());
-								System.out.println("Moving to " + path.getLast() + ":");
-								Point pos = new Point(newX, newY);
-								path.addMove(pos);
-								move.getPoints().forEach(point -> path.addMove(point));
-								System.out.println(path.getPoints());
-								System.out.println();
-								moves.add(path);
-							}
-						}
-						PiecePath path = new PiecePath(piece.getBoardPos());
-						path.addMove(new Point(newX, newY));
-						moves.add(path);
-					}
-				}
-			}
-		}
-		return moves;
+		validMoves = state.getValidMoves(x, y, false, state.getPiece(x, y),null);
 	}
 	
 	public List<PiecePath> getPossibleMoves(Color color) {
 		List<PiecePath> moves = new ArrayList<PiecePath>();
-		for (Piece piece : pieces) {
+		for (Piece piece : state.pieces) {
 			if (piece.color.equals(color)) {
 				Point pos = piece.getBoardPos();
-				moves.addAll(getValidMoves(pos.x, pos.y, false, piece,null));
+				moves.addAll(state.getValidMoves(pos.x, pos.y, false, piece,null));
 			}
 		}
 		return moves;
@@ -221,19 +149,13 @@ public class Board implements Renderable {
 	public int evaluate(Color color){
 		int mainCount = 0;
 		int otherCount = 0;
-		for(Piece piece : pieces){
+		for(Piece piece : state.pieces){
 			if(piece.color.equals(color))
 				mainCount++;
 			else
 				otherCount++;
 		}
 		return mainCount - otherCount;
-	}
-	
-	public Board clone(){
-		Board board = new Board(display);
-		Collections.copy(board.pieces, pieces);
-		return board;
 	}
 	
 }
