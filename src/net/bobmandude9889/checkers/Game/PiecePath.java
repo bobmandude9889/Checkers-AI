@@ -33,9 +33,9 @@ public class PiecePath {
 	}
 	
 	public void doPath(Board board){
-		Piece piece = board.getPiece(start.x, start.y);
-		board.pieces.remove(piece);
-		board.pieces.add(piece);
+		Piece piece = board.state.getPiece(start.x, start.y);
+		board.state.pieces.remove(piece);
+		board.state.pieces.add(piece);
 		Point prev = start;
 		for(Point move : moves){
 			System.out.println("Adding movement to (" + move.x + ", " + move.y + ") from (" + prev.x + ", " + prev.y + ")");
