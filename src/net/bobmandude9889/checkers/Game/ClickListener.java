@@ -5,6 +5,8 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import net.bobmandude9889.checkers.Main;
+
 public class ClickListener implements MouseListener {
 
 	Board board;
@@ -49,6 +51,8 @@ public class ClickListener implements MouseListener {
 					board.setSelected(null);
 				}
 			}
+		} else {
+			Main.turnManager.finishBlackMove();
 		}
 	}
 

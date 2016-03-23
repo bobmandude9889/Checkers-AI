@@ -8,21 +8,26 @@ import java.util.Random;
 
 import net.bobmandude9889.checkers.Render.Renderable;
 
-public class TurnManager implements Renderable{
+public class TurnManager implements Renderable {
 
 	Color turn = Color.RED;
-	Color back = new Color(160,94,3);
-	int x,y = 0;
-	int width,height;
+	Color back = new Color(160, 94, 3);
+	int x, y = 0;
+	int width, height;
 	Board board;
-	
-	public TurnManager(Board board){ 
+
+	int alphaMin = -13;
+	int betaMax = 13;
+
+	PiecePath blackPath;
+
+	public TurnManager(Board board) {
 		x = board.tileSize * board.size;
 		width = 800 - x;
 		height = 80;
 		this.board = board;
 	}
-	
+
 	@Override
 	public void render(Graphics g) {
 		g.setColor(back);
@@ -33,26 +38,47 @@ public class TurnManager implements Renderable{
 		g.setColor(turn);
 		g.fillRect(x + 5, y + 30, width - 15, height - 40);
 	}
-	
-	public void setTurn(Color color){
-		this.turn = color;
-		if(turn.equals(Color.BLACK)){
-			List<PiecePath> moves = board.getPossibleMoves(turn);
-			if(moves.size() > 0)
-				moves.get(new Random().nextInt(moves.size() - 1)).doPath(board);
+
+	public void setTurn(Color color) {
+		if (color.equals(Color.RED))
+			board.canInput = true;
+
+		if (color.equals(Color.BLACK) && !turn.equals(color)) {
+			List<PiecePath> moves = board.getPossibleMoves(color);
+			if (moves.size() > 0) {
+				blackPath = moves.get(new Random().nextInt(moves.size() - 1));
+				board.setSelected(board.state.getPiece(blackPath.getStart().x, blackPath.getStart().y));
+				board.canInput = false;
+			}
 		}
+		this.turn = color;
 	}
-	
-	public PiecePath generateMove(Color color){
-		Board board = this.board.clone();
-		for(Piece piece : board.pieces){
-			if(piece.color.equals(color)){
-				
+
+	public void finishBlackMove() {
+		board.setSelected(null);
+		blackPath.doPath(board);
+	}
+
+	public PiecePath generateMove(Color color) {
+		BoardState state = this.board.state.clone();
+		for (Piece piece : state.pieces) {
+			if (piece.color.equals(color)) {
+
 			}
 		}
 		return null;
 	}
-	
-	
-	
+
+	// alpha - Value for the path to the maximum
+	// beta - Value for the path to the minimum
+
+	private int max(int alpha, int beta, int layer, BoardState state) {
+		int value = alphaMin;
+
+	}
+
+	private int min(int alpha, int beta, int layer, BoardState state) {
+		int value;
+
+	}
 }
