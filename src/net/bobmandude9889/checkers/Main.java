@@ -11,12 +11,13 @@ public class Main {
 
 	static GameWindow window;
 	static Thread thread;
-
+	public static TurnManager turnManager;
+	
 	public static void main(String[] args) {
 		window = new GameWindow();
 		window.setVisible(true);
 		Board board = new Board(window.display);
-		TurnManager turnManager = new TurnManager(board);
+		turnManager = new TurnManager(board);
 		window.display.addRenderable(board);
 		window.display.addRenderable(turnManager);
 		window.display.addRenderable(new BoardEvaluation(board));
