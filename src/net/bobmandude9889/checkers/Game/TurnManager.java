@@ -44,9 +44,9 @@ public class TurnManager implements Renderable {
 			board.canInput = true;
 
 		if (color.equals(Color.BLACK) && !turn.equals(color)) {
-			List<PiecePath> moves = board.getPossibleMoves(color);
+			List<PiecePath> moves = board.state.getPossibleMoves(color);
 			if (moves.size() > 0) {
-				blackPath = moves.get(new Random().nextInt(moves.size() - 1));
+				blackPath = moves.get(new Random().nextInt(moves.size()));
 				board.setSelected(board.state.getPiece(blackPath.getStart().x, blackPath.getStart().y));
 				board.canInput = false;
 			}
@@ -69,16 +69,27 @@ public class TurnManager implements Renderable {
 		return null;
 	}
 
+	private Color getOther(Color color){
+		return color.equals(Color.BLACK) ? Color.RED : Color.BLACK;
+	}
+	
 	// alpha - Value for the path to the maximum
 	// beta - Value for the path to the minimum
-
-	private int max(int alpha, int beta, int layer, BoardState state) {
+	
+	//TODO Finish ALPHA-BETA Pruning
+	
+	/*private int max(int alpha, int beta, int layer, BoardState state, Color color) {
 		int value = alphaMin;
-
+		List<PiecePath> moves = state.getPossibleMoves(color);
+		for(PiecePath move : moves){
+			state.clone();
+			state.getPiece(move.getStart().x, move.getStart().y).setPos(move.getLast().x, move.getLast().y);
+			min(alpha,)
+		}
 	}
 
-	private int min(int alpha, int beta, int layer, BoardState state) {
+	private int min(int alpha, int beta, int layer, BoardState state, Color color) {
 		int value;
 
-	}
+	}*/
 }

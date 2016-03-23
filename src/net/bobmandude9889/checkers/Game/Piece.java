@@ -59,4 +59,10 @@ public class Piece implements Renderable {
 		return king;
 	}
 	
+	@Override
+	public String toString(){
+		Point pos = getBoardPos();
+		return "{x=" + pos.x + ",y=" + pos.y + ",size=" + size + "," + color.toString() + "}";
+	}
+	
 }

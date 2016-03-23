@@ -41,7 +41,6 @@ public class Board implements Renderable {
 				for (int y = 0; y < 3; y++) {
 					if (x % 2 == (top + y) % 2) {
 						Piece piece = new Piece(x, top + y, tileSize, color);
-						piece.setKing(true);
 						state.pieces.add(piece);
 					}
 				}
@@ -125,25 +124,18 @@ public class Board implements Renderable {
 	public void setValidMoves(int x, int y) {
 		validMoves = state.getValidMoves(x, y, false, state.getPiece(x, y),null);
 	}
-	
-	public List<PiecePath> getPossibleMoves(Color color) {
-		List<PiecePath> moves = new ArrayList<PiecePath>();
-		for (Piece piece : state.pieces) {
-			if (piece.color.equals(color)) {
-				Point pos = piece.getBoardPos();
-				moves.addAll(state.getValidMoves(pos.x, pos.y, false, piece,null));
-			}
-		}
-		return moves;
-	}
 
 	public PiecePath getPath(int x, int y) {
+		PiecePath longest = null;
+		int longestSize = 0;
 		for (PiecePath path : validMoves) {
 			Point point = path.getLast();
-			if (point.x == x && point.y == y)
-				return path;
+			if (point.x == x && point.y == y && path.getPoints().size() > longestSize){
+				longest = path;
+				longestSize = path.getPoints().size();
+			}
 		}
-		return null;
+		return longest;
 	}
 
 	public int evaluate(Color color){

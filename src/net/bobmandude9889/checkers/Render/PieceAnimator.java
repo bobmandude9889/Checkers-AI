@@ -35,11 +35,13 @@ public class PieceAnimator implements Runnable {
 		while (true) {
 			if (piece != null) {
 				if (piece.step == piece.stepAmount + 1) {
-					piece.piece.setPos(piece.endX, piece.endY);
-					if(piece.piece.color.equals(Color.RED))
-						turnManager.setTurn(Color.BLACK);
-					if(piece.piece.color.equals(Color.BLACK))
-						turnManager.setTurn(Color.RED);
+					if (pieces.size() == 0) {
+						piece.piece.setPos(piece.endX, piece.endY);
+						if (piece.piece.color.equals(Color.RED))
+							turnManager.setTurn(Color.BLACK);
+						if (piece.piece.color.equals(Color.BLACK))
+							turnManager.setTurn(Color.RED);
+					}
 					piece = null;
 				} else {
 					try {
@@ -49,12 +51,13 @@ public class PieceAnimator implements Runnable {
 					}
 					piece.step(board);
 
-					int xDist = (piece.endX - piece.startX) / board.tileSize;
-					int yDist = (piece.endY - piece.startY) / board.tileSize;
-					if(Math.abs(xDist) == 2){
-						int midX = (piece.startX / board.tileSize) + (xDist / 2), midY = (piece.startY / board.tileSize) + (yDist / 2);
+					int xDist = (piece.endX - piece.startX) / Board.tileSize;
+					int yDist = (piece.endY - piece.startY) / Board.tileSize;
+					if (Math.abs(xDist) == 2) {
+						int midX = (piece.startX / Board.tileSize) + (xDist / 2),
+								midY = (piece.startY / Board.tileSize) + (yDist / 2);
 						Piece midPiece = board.state.getPiece(midX, midY);
-						if(piece.step == Math.floorDiv((int) piece.stepAmount,2)){
+						if (piece.step == Math.floorDiv((int) piece.stepAmount, 2)) {
 							System.out.println("Half way");
 							board.state.pieces.remove(midPiece);
 						}

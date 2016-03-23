@@ -90,4 +90,16 @@ public class BoardState {
 		return moves;
 	}
 	
+	public List<PiecePath> getPossibleMoves(Color color) {
+		List<PiecePath> moves = new ArrayList<PiecePath>();
+		for (Piece piece : pieces) {
+			if (piece.color.equals(color)) {
+				Point pos = piece.getBoardPos();
+				moves.addAll(getValidMoves(pos.x, pos.y, false, piece,null));
+			}
+		}
+		System.out.println("Pieces = " + pieces + ", Moves = " + moves);
+		return moves;
+	}
+	
 }

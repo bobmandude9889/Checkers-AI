@@ -44,4 +44,9 @@ public class PiecePath {
 		}
 	}
 	
+	@Override
+	public String toString(){
+		return "{start.x=" + start.x + ",start.y=" + start.y + ",moves=" + moves + "}";
+	}
+	
 }
