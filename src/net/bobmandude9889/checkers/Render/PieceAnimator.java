@@ -41,7 +41,6 @@ public class PieceAnimator implements Runnable {
 					if(piece.piece.color.equals(Color.BLACK))
 						turnManager.setTurn(Color.RED);
 					piece = null;
-					board.canInput = true;
 				} else {
 					try {
 						Thread.sleep(piece.stepDelay);
@@ -54,10 +53,10 @@ public class PieceAnimator implements Runnable {
 					int yDist = (piece.endY - piece.startY) / board.tileSize;
 					if(Math.abs(xDist) == 2){
 						int midX = (piece.startX / board.tileSize) + (xDist / 2), midY = (piece.startY / board.tileSize) + (yDist / 2);
-						Piece midPiece = board.getPiece(midX, midY);
+						Piece midPiece = board.state.getPiece(midX, midY);
 						if(piece.step == Math.floorDiv((int) piece.stepAmount,2)){
 							System.out.println("Half way");
-							board.pieces.remove(midPiece);
+							board.state.pieces.remove(midPiece);
 						}
 					}
 				}

@@ -30,7 +30,7 @@ public class AnimatedPiece {
 	
 	public void step(Board board){
 		if(piece == null)
-			piece = board.getPiece(startX, startY);
+			piece = board.state.getPiece(startX, startY);
 		int currentX = startX + (int) (stepX * step);
 		int currentY = startY + (int) (stepY * step);
 		piece.setPos(currentX, currentY);
