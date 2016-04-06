@@ -137,17 +137,5 @@ public class Board implements Renderable {
 		}
 		return longest;
 	}
-
-	public int evaluate(Color color){
-		int mainCount = 0;
-		int otherCount = 0;
-		for(Piece piece : state.pieces){
-			if(piece.color.equals(color))
-				mainCount++;
-			else
-				otherCount++;
-		}
-		return mainCount - otherCount;
-	}
 	
 }

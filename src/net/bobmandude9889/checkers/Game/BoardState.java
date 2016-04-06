@@ -101,5 +101,17 @@ public class BoardState {
 		System.out.println("Pieces = " + pieces + ", Moves = " + moves);
 		return moves;
 	}
+
+	public int evaluate(Color color){
+		int mainCount = 0;
+		int otherCount = 0;
+		for(Piece piece : pieces){
+			if(piece.color.equals(color))
+				mainCount++;
+			else
+				otherCount++;
+		}
+		return mainCount - otherCount;
+	}
 	
 }

@@ -61,35 +61,29 @@ public class TurnManager implements Renderable {
 
 	public PiecePath generateMove(Color color) {
 		BoardState state = this.board.state.clone();
-		for (Piece piece : state.pieces) {
-			if (piece.color.equals(color)) {
-
-			}
-		}
+		//max(alphaMin, betaMax, 5, state, color);
 		return null;
 	}
 
-	private Color getOther(Color color){
+	private Color getOther(Color color) {
 		return color.equals(Color.BLACK) ? Color.RED : Color.BLACK;
 	}
-	
+
 	// alpha - Value for the path to the maximum
 	// beta - Value for the path to the minimum
-	
-	//TODO Finish ALPHA-BETA Pruning
-	
-	/*private int max(int alpha, int beta, int layer, BoardState state, Color color) {
-		int value = alphaMin;
-		List<PiecePath> moves = state.getPossibleMoves(color);
-		for(PiecePath move : moves){
-			state.clone();
-			state.getPiece(move.getStart().x, move.getStart().y).setPos(move.getLast().x, move.getLast().y);
-			min(alpha,)
+
+	// TODO Finish ALPHA-BETA Pruning
+
+/*	private int alphabeta(BoardState state, int depth, int alpha, int beta, boolean max, Color color) {
+		if (depth == 0)
+			return state.evaluate(color);
+		if (max) {
+			int v = alphaMin;
+			for (PiecePath moves : state.getPossibleMoves(color)) {
+				BoardState stateCopy = state.clone();
+				stateCopy.
+				v = Math.max(v,alphaBeta(stateCopy,), b)
+			}
 		}
-	}
-
-	private int min(int alpha, int beta, int layer, BoardState state, Color color) {
-		int value;
-
 	}*/
 }

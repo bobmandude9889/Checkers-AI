@@ -26,7 +26,7 @@ public class BoardEvaluation implements Renderable{
 		g.fillRect(x, y, width, height);
 		g.setColor(Color.BLACK);
 		g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
-		g.drawString("Evaluation of RED: " + board.evaluate(Color.RED), x + 10, y + 20);
+		g.drawString("Evaluation of RED: " + board.state.evaluate(Color.RED), x + 10, y + 20);
 	}
 
 }
