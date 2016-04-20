@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.util.List;
-import java.util.Random;
 
 import net.bobmandude9889.checkers.Render.Renderable;
 
@@ -20,6 +19,8 @@ public class TurnManager implements Renderable {
 	int betaMax = 13;
 
 	PiecePath blackPath;
+
+	PiecePath bestPath;
 
 	public TurnManager(Board board) {
 		x = board.tileSize * board.size;
@@ -46,7 +47,8 @@ public class TurnManager implements Renderable {
 		if (color.equals(Color.BLACK) && !turn.equals(color)) {
 			List<PiecePath> moves = board.state.getPossibleMoves(color);
 			if (moves.size() > 0) {
-				blackPath = moves.get(new Random().nextInt(moves.size()));
+				blackPath = generateMove(Color.BLACK);
+				System.out.println(bestPath);
 				board.setSelected(board.state.getPiece(blackPath.getStart().x, blackPath.getStart().y));
 				board.canInput = false;
 			}
@@ -60,9 +62,10 @@ public class TurnManager implements Renderable {
 	}
 
 	public PiecePath generateMove(Color color) {
-		BoardState state = this.board.state.clone();
-		//max(alphaMin, betaMax, 5, state, color);
-		return null;
+		System.out.println(this.board.state.pieces);
+		int v = alphaBeta(this.board.state, 3, alphaMin, betaMax, true, color);
+		System.out.println(v);
+		return bestPath;
 	}
 
 	private Color getOther(Color color) {
@@ -72,18 +75,41 @@ public class TurnManager implements Renderable {
 	// alpha - Value for the path to the maximum
 	// beta - Value for the path to the minimum
 
-	// TODO Finish ALPHA-BETA Pruning
-
-/*	private int alphabeta(BoardState state, int depth, int alpha, int beta, boolean max, Color color) {
-		if (depth == 0)
-			return state.evaluate(color);
+	private int alphaBeta(BoardState state, int depth, int alpha, int beta, boolean max, Color color) {
+		System.out.println("depth = " + depth);
+		if (depth == 0 || state.gameOver()){
+			int eval = state.evaluate(color);
+			System.out.println("eval = " + eval);
+			return eval;
+		} 
 		if (max) {
 			int v = alphaMin;
-			for (PiecePath moves : state.getPossibleMoves(color)) {
+			for (PiecePath move : state.getPossibleMoves(color)) {
 				BoardState stateCopy = state.clone();
-				stateCopy.
-				v = Math.max(v,alphaBeta(stateCopy,), b)
+				stateCopy.movePiece(move);
+				int vPrev = v;
+				v = Math.max(v, alphaBeta(stateCopy, depth - 1, alpha, beta, false, getOther(color)));
+				if (v != vPrev || bestPath == null) {
+					System.out.println("max v = " + v);
+					this.bestPath = move;
+				}
+				alpha = Math.max(alpha, v);
+				if (beta <= alpha)
+					break;
 			}
+			return v;
+		} else {
+			int v = betaMax;
+			for (PiecePath move : state.getPossibleMoves(color)) {
+				BoardState stateCopy = state.clone();
+				stateCopy.movePiece(move);
+				v = Math.min(v, alphaBeta(stateCopy, depth - 1, alpha, beta, true, getOther(color)));
+				beta = Math.min(beta, v);
+				if (beta <= alpha)
+					break;
+			}
+			System.out.println("min = " + v);
+			return v;
 		}
-	}*/
+	}
 }
