@@ -23,7 +23,7 @@ public class TurnManager implements Renderable {
 	PiecePath bestPath;
 
 	public TurnManager(Board board) {
-		x = board.tileSize * board.size;
+		x = Board.tileSize * Board.size;
 		width = 800 - x;
 		height = 80;
 		this.board = board;
