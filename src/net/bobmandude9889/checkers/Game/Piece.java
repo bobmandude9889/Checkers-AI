@@ -27,6 +27,9 @@ public class Piece implements Renderable {
 			if(color.equals(Color.RED)){
 				g.setColor(new Color(0,0,0,100));
 				g.fillOval(x, y, size, size);
+			} else {
+				g.setColor(new Color(255,255,255,40));
+				g.fillOval(x, y, size, size);
 			}
 		}
 	}

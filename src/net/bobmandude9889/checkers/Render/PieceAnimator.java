@@ -1,4 +1,4 @@
-package net.bobmandude9889.checkers.Render;
+	package net.bobmandude9889.checkers.Render;
 
 import java.awt.Color;
 import java.awt.Point;

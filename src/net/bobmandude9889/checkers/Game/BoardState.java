@@ -130,7 +130,9 @@ public class BoardState {
 	}
 
 	public void movePiece(int x, int y, int toX, int toY) {
-		getPiece(x, y).setBoardPos(toX, toY);
+		Piece piece = getPiece(x, y); 
+		if(piece != null)
+			piece.setBoardPos(toX, toY);
 	}
 
 	public int count(Color color) {

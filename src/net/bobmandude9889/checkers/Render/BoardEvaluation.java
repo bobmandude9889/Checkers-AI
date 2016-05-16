@@ -14,7 +14,7 @@ public class BoardEvaluation implements Renderable{
 	Board board;
 	
 	public BoardEvaluation(Board board) {
-		x = board.tileSize * board.size;
+		x = Board.tileSize * Board.size;
 		width = 800 - x;
 		height = 30;
 		this.board = board;

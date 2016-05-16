@@ -44,15 +44,12 @@ public class ClickListener implements MouseListener {
 			if (piece != null && piece.color.equals(Color.RED)) {
 				board.setSelected(piece);
 			} else if (piece == null && board.selected != null) {
-				//Point oldPos = board.selected.getBoardPos();
 				Point newPos = board.getBoardPoint(e.getX(), e.getY());
 				if (board.canMove(newPos.x, newPos.y)) {
 					board.getPath(newPos.x, newPos.y).doPath(board);
 					board.setSelected(null);
 				}
 			}
-		} else {
-			Main.turnManager.finishBlackMove();
 		}
 	}
 
